@@ -24,6 +24,8 @@ WORKDIR /app
 # Install openai-whisper
 RUN git clone https://github.com/myshell-ai/OpenVoice openvoice
 COPY main.py /app/openvoice/openvoice/main.py
+COPY load_ckpts.py /app/openvoice/openvoice/load_ckpts.py
+RUN pip3 install requests starlette pydantic fastapi uvicorn nvidia-cublas-cu11
 
 RUN pip3 install gradio==3.50.2 langid faster-whisper whisper-timestamped unidecode eng-to-ipa pypinyin cn2an
 
@@ -60,6 +62,9 @@ ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/python3.10/dist-packages/nvi
 #RUN sed -i "s/demo.launch(debug=True, show_api=True, share=args.share)/demo.launch(server_name='0.0.0.0', debug=True, show_api=True, share=args.share)/" /app/openvoice/openvoice/openvoice_app.py
 
 WORKDIR /app/openvoice/openvoice
+#RUN python3 load_ckpts.py
+#RUN rm -r /app/openvoice/openvoice/outputs_v2/*
 
+EXPOSE 5001
 # Default command when the container is started
-#CMD ["python3", "-m", "openvoice_app" ,"--share"]
+CMD ["python3", "main.py"]
